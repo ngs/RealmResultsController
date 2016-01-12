@@ -25,15 +25,17 @@ class RealmExtensionSpec: QuickSpec {
         var taskToTest: Task?
 
         beforeSuite {
-            let configuration = Realm.Configuration(inMemoryIdentifier: "testingRealm")
-            realm = try! Realm(configuration: configuration)
-            taskToTest = Task()
-            taskToTest!.id = 1500
-            taskToTest!.name = "testingName1"
-            self.cleanLoggers()
-            try! realm.write {
-                realm.addNotified([taskToTest!])
-            }
+            dispatch_sync(dispatch_queue_create("test", nil), {
+                let configuration = Realm.Configuration(inMemoryIdentifier: "testingRealm")
+                realm = try! Realm(configuration: configuration)
+                taskToTest = Task()
+                taskToTest!.id = 1500
+                taskToTest!.name = "testingName1"
+                self.cleanLoggers()
+                try! realm.write {
+                    realm.addNotified([taskToTest!])
+                }
+            })
         }
     
         describe("addNotified (array)") {

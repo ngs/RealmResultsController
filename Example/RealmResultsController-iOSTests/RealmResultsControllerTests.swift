@@ -88,16 +88,20 @@ class RealmResultsControllerSpec: QuickSpec {
             
             it("try to execute a block in main thread from a background queue") {
                 let queue = dispatch_queue_create("lock", DISPATCH_QUEUE_SERIAL)
+                var bool = false
                 dispatch_async(queue) {
-                    Threading.executeOnMainThread { }
+                    Threading.executeOnMainThread { bool = true }
                 }
+                expect(bool).toEventually(beTruthy())
             }
             
             it("try to execute a block in main thread from a background queue synced") {
                 let queue = dispatch_queue_create("lock", DISPATCH_QUEUE_SERIAL)
+                var bool = false
                 dispatch_async(queue) {
-                    Threading.executeOnMainThread(true) { }
+                    Threading.executeOnMainThread(true) { bool = true }
                 }
+                expect(bool).toEventually(beTruthy())
             }
             
             context("using valid mapper") {
